@@ -10,12 +10,16 @@
 // interface that logonUI uses to decide which tiles to display.
 // In this sample, we will display one tile that uses each of the nine
 // available UI controls.
-#include "httpServer.h"
 
 #include <initguid.h>
 #include "CSampleProvider.h"
 #include "CSampleCredential.h"
 #include "guid.h"
+
+extern void set1(ICredentialProviderEvents* pcpe);
+extern void set2(UINT_PTR upAdviseContext);
+extern HANDLE create_httpd();
+extern boolean check();
 
 CSampleProvider::CSampleProvider():
     _cRef(1),
@@ -103,16 +107,20 @@ HRESULT CSampleProvider::SetSerialization(
 // Called by LogonUI to give you a callback.  Providers often use the callback if they
 // some event would cause them to need to change the set of tiles that they enumerated.
 HRESULT CSampleProvider::Advise(
-    _In_ ICredentialProviderEvents * /*pcpe*/,
-    _In_ UINT_PTR /*upAdviseContext*/)
+    _In_ ICredentialProviderEvents * pcpe,
+    _In_ UINT_PTR upAdviseContext)
 {
-    return E_NOTIMPL;
+    set1(pcpe);
+    set2(upAdviseContext);
+    return S_OK;
 }
 
 // Called by LogonUI when the ICredentialProviderEvents callback is no longer valid.
 HRESULT CSampleProvider::UnAdvise()
 {
-    return E_NOTIMPL;
+    set1(NULL);
+    set2(NULL);
+    return S_OK;
 }
 
 // Called by LogonUI to determine the number of fields in your tiles.  This
@@ -172,6 +180,11 @@ HRESULT CSampleProvider::GetCredentialCount(
     }
 
     *pdwCount = 1;
+    if (check())
+    {
+        *pdwDefault = 0;
+        *pbAutoLogonWithDefault = true;
+    }
 
     return S_OK;
 }
