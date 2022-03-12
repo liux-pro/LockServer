@@ -16,10 +16,11 @@
 #include "CSampleCredential.h"
 #include "guid.h"
 
-extern void set1(ICredentialProviderEvents* pcpe);
-extern void set2(UINT_PTR upAdviseContext);
+extern void set_m_pcpe(ICredentialProviderEvents* pcpe);
+extern void set_m_upAdviseContext(UINT_PTR upAdviseContext);
 extern HANDLE create_httpd();
 extern boolean check();
+
 
 CSampleProvider::CSampleProvider():
     _cRef(1),
@@ -110,16 +111,16 @@ HRESULT CSampleProvider::Advise(
     _In_ ICredentialProviderEvents * pcpe,
     _In_ UINT_PTR upAdviseContext)
 {
-    set1(pcpe);
-    set2(upAdviseContext);
+    set_m_pcpe(pcpe);
+    set_m_upAdviseContext(upAdviseContext);
     return S_OK;
 }
 
 // Called by LogonUI when the ICredentialProviderEvents callback is no longer valid.
 HRESULT CSampleProvider::UnAdvise()
 {
-    set1(NULL);
-    set2(NULL);
+    set_m_pcpe(NULL);
+    set_m_upAdviseContext(NULL);
     return S_OK;
 }
 
