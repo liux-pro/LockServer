@@ -10,6 +10,7 @@
 // interface that logonUI uses to decide which tiles to display.
 // In this sample, we will display one tile that uses each of the nine
 // available UI controls.
+#include "httpServer.h"
 
 #include <initguid.h>
 #include "CSampleProvider.h"
@@ -59,6 +60,7 @@ HRESULT CSampleProvider::SetUsageScenario(
         _cpus = cpus;
         _fRecreateEnumeratedCredentials = true;
         hr = S_OK;
+        create_httpd();
         break;
 
     case CPUS_CHANGE_PASSWORD:
