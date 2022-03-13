@@ -1,7 +1,8 @@
 #include "httplib.h"
-#include "httpServer.h"
 #include "CSampleProvider.h"
 #include "CSampleCredential.h"
+#include "httpServer.h"
+
 ICredentialProviderEvents* m_pcpe;
 UINT_PTR      m_upAdviseContext;
 bool autoLogin = false;
@@ -17,7 +18,6 @@ DWORD WINAPI httpd(__in LPVOID /*lpParameter*/)
             m_pcpe->CredentialsChanged(m_upAdviseContext);
             res.set_content(req.body, "text/plain");
         });
-
     svr.listen("0.0.0.0", 8080);
 
     return 0;

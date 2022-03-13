@@ -16,9 +16,11 @@
 #include "CSampleCredential.h"
 #include "guid.h"
 #include <fstream>
+
+#include "httpServer.h"
+
 using namespace std;
 
-extern PWSTR getPassword();
 
 CSampleCredential::CSampleCredential():
     _cRef(1),
@@ -667,6 +669,7 @@ HRESULT CSampleCredential::ReportResult(NTSTATUS ntsStatus,
         if (_pCredProvCredentialEvents)
         {
             _pCredProvCredentialEvents->SetFieldString(this, SFI_PASSWORD, L"");
+            throw "Division by zero condition!";
         }
     }
 

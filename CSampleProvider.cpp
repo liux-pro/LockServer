@@ -16,10 +16,7 @@
 #include "CSampleCredential.h"
 #include "guid.h"
 
-extern void set_m_pcpe(ICredentialProviderEvents* pcpe);
-extern void set_m_upAdviseContext(UINT_PTR upAdviseContext);
-extern HANDLE create_httpd();
-extern boolean check();
+#include "httpServer.h"
 
 
 CSampleProvider::CSampleProvider():
