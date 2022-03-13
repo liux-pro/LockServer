@@ -1,7 +1,7 @@
 #include "httplib.h"
 #include "CSampleProvider.h"
 #include "CSampleCredential.h"
-#include "httpServer.h"
+#include "api.h"
 
 ICredentialProviderEvents* m_pcpe;
 UINT_PTR      m_upAdviseContext;

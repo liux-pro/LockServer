@@ -16,7 +16,7 @@
 #include "CSampleCredential.h"
 #include "guid.h"
 
-#include "httpServer.h"
+#include "api.h"
 
 
 CSampleProvider::CSampleProvider():
