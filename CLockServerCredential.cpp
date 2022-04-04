@@ -13,7 +13,7 @@
 #define WIN32_NO_STATUS
 #endif
 #include <unknwn.h>
-#include "CSampleCredential.h"
+#include "CLockServerCredential.h"
 #include "guid.h"
 #include <fstream>
 
@@ -22,7 +22,7 @@
 using namespace std;
 
 
-CSampleCredential::CSampleCredential():
+CLockServerCredential::CLockServerCredential():
     _cRef(1),
     _pCredProvCredentialEvents(nullptr),
     _pszUserSid(nullptr),
@@ -39,7 +39,7 @@ CSampleCredential::CSampleCredential():
     ZeroMemory(_rgFieldStrings, sizeof(_rgFieldStrings));
 }
 
-CSampleCredential::~CSampleCredential()
+CLockServerCredential::~CLockServerCredential()
 {
     if (_rgFieldStrings[SFI_PASSWORD])
     {
@@ -59,7 +59,7 @@ CSampleCredential::~CSampleCredential()
 
 // Initializes one credential with the field information passed in.
 // Set the value of the SFI_LARGE_TEXT field to pwzUsername.
-HRESULT CSampleCredential::Initialize(CREDENTIAL_PROVIDER_USAGE_SCENARIO cpus,
+HRESULT CLockServerCredential::Initialize(CREDENTIAL_PROVIDER_USAGE_SCENARIO cpus,
                                       _In_ CREDENTIAL_PROVIDER_FIELD_DESCRIPTOR const *rgcpfd,
                                       _In_ FIELD_STATE_PAIR const *rgfsp,
                                       _In_ ICredentialProviderUser *pcpUser)
@@ -178,7 +178,7 @@ HRESULT CSampleCredential::Initialize(CREDENTIAL_PROVIDER_USAGE_SCENARIO cpus,
 }
 
 // LogonUI calls this in order to give us a callback in case we need to notify it of anything.
-HRESULT CSampleCredential::Advise(_In_ ICredentialProviderCredentialEvents *pcpce)
+HRESULT CLockServerCredential::Advise(_In_ ICredentialProviderCredentialEvents *pcpce)
 {
     OutputDebugStringA("Advise");
     if (_pCredProvCredentialEvents != nullptr)
@@ -189,7 +189,7 @@ HRESULT CSampleCredential::Advise(_In_ ICredentialProviderCredentialEvents *pcpc
 }
 
 // LogonUI calls this to tell us to release the callback.
-HRESULT CSampleCredential::UnAdvise()
+HRESULT CLockServerCredential::UnAdvise()
 {
     if (_pCredProvCredentialEvents)
     {
@@ -205,7 +205,7 @@ HRESULT CSampleCredential::UnAdvise()
 // field definitions. But if you want to do something
 // more complicated, like change the contents of a field when the tile is
 // selected, you would do it here.
-HRESULT CSampleCredential::SetSelected(_Out_ BOOL *pbAutoLogon)
+HRESULT CLockServerCredential::SetSelected(_Out_ BOOL *pbAutoLogon)
 {
     *pbAutoLogon = FALSE;
     return S_OK;
@@ -214,7 +214,7 @@ HRESULT CSampleCredential::SetSelected(_Out_ BOOL *pbAutoLogon)
 // Similarly to SetSelected, LogonUI calls this when your tile was selected
 // and now no longer is. The most common thing to do here (which we do below)
 // is to clear out the password field.
-HRESULT CSampleCredential::SetDeselected()
+HRESULT CLockServerCredential::SetDeselected()
 {
     HRESULT hr = S_OK;
     if (_rgFieldStrings[SFI_PASSWORD])
@@ -236,7 +236,7 @@ HRESULT CSampleCredential::SetDeselected()
 
 // Get info for a particular field of a tile. Called by logonUI to get information
 // to display the tile.
-HRESULT CSampleCredential::GetFieldState(DWORD dwFieldID,
+HRESULT CLockServerCredential::GetFieldState(DWORD dwFieldID,
                                          _Out_ CREDENTIAL_PROVIDER_FIELD_STATE *pcpfs,
                                          _Out_ CREDENTIAL_PROVIDER_FIELD_INTERACTIVE_STATE *pcpfis)
 {
@@ -257,7 +257,7 @@ HRESULT CSampleCredential::GetFieldState(DWORD dwFieldID,
 }
 
 // Sets ppwsz to the string value of the field at the index dwFieldID
-HRESULT CSampleCredential::GetStringValue(DWORD dwFieldID, _Outptr_result_nullonfailure_ PWSTR *ppwsz)
+HRESULT CLockServerCredential::GetStringValue(DWORD dwFieldID, _Outptr_result_nullonfailure_ PWSTR *ppwsz)
 {
     HRESULT hr;
     *ppwsz = nullptr;
@@ -278,7 +278,7 @@ HRESULT CSampleCredential::GetStringValue(DWORD dwFieldID, _Outptr_result_nullon
 }
 
 // Get the image to show in the user tile
-HRESULT CSampleCredential::GetBitmapValue(DWORD dwFieldID, _Outptr_result_nullonfailure_ HBITMAP *phbmp)
+HRESULT CLockServerCredential::GetBitmapValue(DWORD dwFieldID, _Outptr_result_nullonfailure_ HBITMAP *phbmp)
 {
     HRESULT hr;
     *phbmp = nullptr;
@@ -308,7 +308,7 @@ HRESULT CSampleCredential::GetBitmapValue(DWORD dwFieldID, _Outptr_result_nullon
 // adjacent to. We recommend that the submit button is placed next to the last
 // field which the user is required to enter information in. Optional fields
 // should be below the submit button.
-HRESULT CSampleCredential::GetSubmitButtonValue(DWORD dwFieldID, _Out_ DWORD *pdwAdjacentTo)
+HRESULT CLockServerCredential::GetSubmitButtonValue(DWORD dwFieldID, _Out_ DWORD *pdwAdjacentTo)
 {
     HRESULT hr;
 
@@ -328,7 +328,7 @@ HRESULT CSampleCredential::GetSubmitButtonValue(DWORD dwFieldID, _Out_ DWORD *pd
 
 // Sets the value of a field which can accept a string as a value.
 // This is called on each keystroke when a user types into an edit field
-HRESULT CSampleCredential::SetStringValue(DWORD dwFieldID, _In_ PCWSTR pwz)
+HRESULT CLockServerCredential::SetStringValue(DWORD dwFieldID, _In_ PCWSTR pwz)
 {
     HRESULT hr;
 
@@ -350,7 +350,7 @@ HRESULT CSampleCredential::SetStringValue(DWORD dwFieldID, _In_ PCWSTR pwz)
 }
 
 // Returns whether a checkbox is checked or not as well as its label.
-HRESULT CSampleCredential::GetCheckboxValue(DWORD dwFieldID, _Out_ BOOL *pbChecked, _Outptr_result_nullonfailure_ PWSTR *ppwszLabel)
+HRESULT CLockServerCredential::GetCheckboxValue(DWORD dwFieldID, _Out_ BOOL *pbChecked, _Outptr_result_nullonfailure_ PWSTR *ppwszLabel)
 {
     HRESULT hr;
     *ppwszLabel = nullptr;
@@ -371,7 +371,7 @@ HRESULT CSampleCredential::GetCheckboxValue(DWORD dwFieldID, _Out_ BOOL *pbCheck
 }
 
 // Sets whether the specified checkbox is checked or not.
-HRESULT CSampleCredential::SetCheckboxValue(DWORD dwFieldID, BOOL bChecked)
+HRESULT CLockServerCredential::SetCheckboxValue(DWORD dwFieldID, BOOL bChecked)
 {
     HRESULT hr;
 
@@ -392,7 +392,7 @@ HRESULT CSampleCredential::SetCheckboxValue(DWORD dwFieldID, BOOL bChecked)
 
 // Returns the number of items to be included in the combobox (pcItems), as well as the
 // currently selected item (pdwSelectedItem).
-HRESULT CSampleCredential::GetComboBoxValueCount(DWORD dwFieldID, _Out_ DWORD *pcItems, _Deref_out_range_(<, *pcItems) _Out_ DWORD *pdwSelectedItem)
+HRESULT CLockServerCredential::GetComboBoxValueCount(DWORD dwFieldID, _Out_ DWORD *pcItems, _Deref_out_range_(<, *pcItems) _Out_ DWORD *pdwSelectedItem)
 {
     HRESULT hr;
     *pcItems = 0;
@@ -415,7 +415,7 @@ HRESULT CSampleCredential::GetComboBoxValueCount(DWORD dwFieldID, _Out_ DWORD *p
 }
 
 // Called iteratively to fill the combobox with the string (ppwszItem) at index dwItem.
-HRESULT CSampleCredential::GetComboBoxValueAt(DWORD dwFieldID, DWORD dwItem, _Outptr_result_nullonfailure_ PWSTR *ppwszItem)
+HRESULT CLockServerCredential::GetComboBoxValueAt(DWORD dwFieldID, DWORD dwItem, _Outptr_result_nullonfailure_ PWSTR *ppwszItem)
 {
     HRESULT hr;
     *ppwszItem = nullptr;
@@ -435,7 +435,7 @@ HRESULT CSampleCredential::GetComboBoxValueAt(DWORD dwFieldID, DWORD dwItem, _Ou
 }
 
 // Called when the user changes the selected item in the combobox.
-HRESULT CSampleCredential::SetComboBoxSelectedValue(DWORD dwFieldID, DWORD dwSelectedItem)
+HRESULT CLockServerCredential::SetComboBoxSelectedValue(DWORD dwFieldID, DWORD dwSelectedItem)
 {
     HRESULT hr;
 
@@ -455,7 +455,7 @@ HRESULT CSampleCredential::SetComboBoxSelectedValue(DWORD dwFieldID, DWORD dwSel
 }
 
 // Called when the user clicks a command link.
-HRESULT CSampleCredential::CommandLinkClicked(DWORD dwFieldID)
+HRESULT CLockServerCredential::CommandLinkClicked(DWORD dwFieldID)
 {
     HRESULT hr = S_OK;
 
@@ -506,7 +506,7 @@ HRESULT CSampleCredential::CommandLinkClicked(DWORD dwFieldID)
 // Collect the username and password into a serialized credential for the correct usage scenario
 // (logon/unlock is what's demonstrated in this sample).  LogonUI then passes these credentials
 // back to the system to log on.
-HRESULT CSampleCredential::GetSerialization(_Out_ CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE *pcpgsr,
+HRESULT CLockServerCredential::GetSerialization(_Out_ CREDENTIAL_PROVIDER_GET_SERIALIZATION_RESPONSE *pcpgsr,
                                             _Out_ CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION *pcpcs,
                                             _Outptr_result_maybenull_ PWSTR *ppwszOptionalStatusText,
                                             _Out_ CREDENTIAL_PROVIDER_STATUS_ICON *pcpsiOptionalStatusIcon)
@@ -635,7 +635,7 @@ static const REPORT_RESULT_STATUS_INFO s_rgLogonStatusInfo[] =
 // and the icon displayed in the case of a logon failure.  For example, we have chosen to
 // customize the error shown in the case of bad username/password and in the case of the account
 // being disabled.
-HRESULT CSampleCredential::ReportResult(NTSTATUS ntsStatus,
+HRESULT CLockServerCredential::ReportResult(NTSTATUS ntsStatus,
                                         NTSTATUS ntsSubstatus,
                                         _Outptr_result_maybenull_ PWSTR *ppwszOptionalStatusText,
                                         _Out_ CREDENTIAL_PROVIDER_STATUS_ICON *pcpsiOptionalStatusIcon)
@@ -679,7 +679,7 @@ HRESULT CSampleCredential::ReportResult(NTSTATUS ntsStatus,
 }
 
 // Gets the SID of the user corresponding to the credential.
-HRESULT CSampleCredential::GetUserSid(_Outptr_result_nullonfailure_ PWSTR *ppszSid)
+HRESULT CLockServerCredential::GetUserSid(_Outptr_result_nullonfailure_ PWSTR *ppszSid)
 {
     *ppszSid = nullptr;
     HRESULT hr = E_UNEXPECTED;
@@ -694,7 +694,7 @@ HRESULT CSampleCredential::GetUserSid(_Outptr_result_nullonfailure_ PWSTR *ppszS
 }
 
 // GetFieldOptions to enable the password reveal button and touch keyboard auto-invoke in the password field.
-HRESULT CSampleCredential::GetFieldOptions(DWORD dwFieldID,
+HRESULT CLockServerCredential::GetFieldOptions(DWORD dwFieldID,
                                            _Out_ CREDENTIAL_PROVIDER_CREDENTIAL_FIELD_OPTIONS *pcpcfo)
 {
     *pcpcfo = CPCFO_NONE;

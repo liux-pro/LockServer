@@ -12,14 +12,14 @@
 // available UI controls.
 
 #include <initguid.h>
-#include "CSampleProvider.h"
-#include "CSampleCredential.h"
+#include "CLockServerProvider.h"
+#include "CLockServerCredential.h"
 #include "guid.h"
 
 #include "api.h"
 
 
-CSampleProvider::CSampleProvider():
+CLockServerProvider::CLockServerProvider():
     _cRef(1),
     _pCredential(nullptr),
     _pCredProviderUserArray(nullptr)
@@ -27,7 +27,7 @@ CSampleProvider::CSampleProvider():
     DllAddRef();
 }
 
-CSampleProvider::~CSampleProvider()
+CLockServerProvider::~CLockServerProvider()
 {
     if (_pCredential != nullptr)
     {
@@ -45,7 +45,7 @@ CSampleProvider::~CSampleProvider()
 
 // SetUsageScenario is the provider's cue that it's going to be asked for tiles
 // in a subsequent call.
-HRESULT CSampleProvider::SetUsageScenario(
+HRESULT CLockServerProvider::SetUsageScenario(
     CREDENTIAL_PROVIDER_USAGE_SCENARIO cpus,
     DWORD /*dwFlags*/)
 {
@@ -96,7 +96,7 @@ HRESULT CSampleProvider::SetUsageScenario(
 // it into the main sample.  We felt it was more important to get these samples out to you quickly than to
 // hold them in order to do the work to integrate the SetSerialization changes from SampleCredentialProvider
 // into this sample.]
-HRESULT CSampleProvider::SetSerialization(
+HRESULT CLockServerProvider::SetSerialization(
     _In_ CREDENTIAL_PROVIDER_CREDENTIAL_SERIALIZATION const * /*pcpcs*/)
 {
     return E_NOTIMPL;
@@ -104,7 +104,7 @@ HRESULT CSampleProvider::SetSerialization(
 
 // Called by LogonUI to give you a callback.  Providers often use the callback if they
 // some event would cause them to need to change the set of tiles that they enumerated.
-HRESULT CSampleProvider::Advise(
+HRESULT CLockServerProvider::Advise(
     _In_ ICredentialProviderEvents * pcpe,
     _In_ UINT_PTR upAdviseContext)
 {
@@ -114,7 +114,7 @@ HRESULT CSampleProvider::Advise(
 }
 
 // Called by LogonUI when the ICredentialProviderEvents callback is no longer valid.
-HRESULT CSampleProvider::UnAdvise()
+HRESULT CLockServerProvider::UnAdvise()
 {
     set_m_pcpe(NULL);
     set_m_upAdviseContext(NULL);
@@ -127,7 +127,7 @@ HRESULT CSampleProvider::UnAdvise()
 // to have different fields from the other tiles you enumerate for a given usage
 // scenario you must include them all in this count and then hide/show them as desired
 // using the field descriptors.
-HRESULT CSampleProvider::GetFieldDescriptorCount(
+HRESULT CLockServerProvider::GetFieldDescriptorCount(
     _Out_ DWORD *pdwCount)
 {
     *pdwCount = SFI_NUM_FIELDS;
@@ -135,7 +135,7 @@ HRESULT CSampleProvider::GetFieldDescriptorCount(
 }
 
 // Gets the field descriptor for a particular field.
-HRESULT CSampleProvider::GetFieldDescriptorAt(
+HRESULT CLockServerProvider::GetFieldDescriptorAt(
     DWORD dwIndex,
     _Outptr_result_nullonfailure_ CREDENTIAL_PROVIDER_FIELD_DESCRIPTOR **ppcpfd)
 {
@@ -162,7 +162,7 @@ HRESULT CSampleProvider::GetFieldDescriptorAt(
 // the default. If *pbAutoLogonWithDefault is TRUE, LogonUI will immediately call
 // GetSerialization on the credential you've specified as the default and will submit
 // that credential for authentication without showing any further UI.
-HRESULT CSampleProvider::GetCredentialCount(
+HRESULT CLockServerProvider::GetCredentialCount(
     _Out_ DWORD *pdwCount,
     _Out_ DWORD *pdwDefault,
     _Out_ BOOL *pbAutoLogonWithDefault)
@@ -189,7 +189,7 @@ HRESULT CSampleProvider::GetCredentialCount(
 
 // Returns the credential at the index specified by dwIndex. This function is called by logonUI to enumerate
 // the tiles.
-HRESULT CSampleProvider::GetCredentialAt(
+HRESULT CLockServerProvider::GetCredentialAt(
     DWORD dwIndex,
     _Outptr_result_nullonfailure_ ICredentialProviderCredential **ppcpc)
 {
@@ -205,7 +205,7 @@ HRESULT CSampleProvider::GetCredentialAt(
 
 // This function will be called by LogonUI after SetUsageScenario succeeds.
 // Sets the User Array with the list of users to be enumerated on the logon screen.
-HRESULT CSampleProvider::SetUserArray(_In_ ICredentialProviderUserArray *users)
+HRESULT CLockServerProvider::SetUserArray(_In_ ICredentialProviderUserArray *users)
 {
     if (_pCredProviderUserArray)
     {
@@ -216,7 +216,7 @@ HRESULT CSampleProvider::SetUserArray(_In_ ICredentialProviderUserArray *users)
     return S_OK;
 }
 
-void CSampleProvider::_CreateEnumeratedCredentials()
+void CLockServerProvider::_CreateEnumeratedCredentials()
 {
     switch (_cpus)
     {
@@ -231,7 +231,7 @@ void CSampleProvider::_CreateEnumeratedCredentials()
     }
 }
 
-void CSampleProvider::_ReleaseEnumeratedCredentials()
+void CLockServerProvider::_ReleaseEnumeratedCredentials()
 {
     if (_pCredential != nullptr)
     {
@@ -240,7 +240,7 @@ void CSampleProvider::_ReleaseEnumeratedCredentials()
     }
 }
 
-HRESULT CSampleProvider::_EnumerateCredentials()
+HRESULT CLockServerProvider::_EnumerateCredentials()
 {
     HRESULT hr = E_UNEXPECTED;
     if (_pCredProviderUserArray != nullptr)
@@ -253,7 +253,7 @@ HRESULT CSampleProvider::_EnumerateCredentials()
             hr = _pCredProviderUserArray->GetAt(0, &pCredUser);
             if (SUCCEEDED(hr))
             {
-                _pCredential = new(std::nothrow) CSampleCredential();
+                _pCredential = new(std::nothrow) CLockServerCredential();
                 if (_pCredential != nullptr)
                 {
                     hr = _pCredential->Initialize(_cpus, s_rgCredProvFieldDescriptors, s_rgFieldStatePairs, pCredUser);
@@ -278,7 +278,7 @@ HRESULT CSampleProvider::_EnumerateCredentials()
 HRESULT CSample_CreateInstance(_In_ REFIID riid, _Outptr_ void **ppv)
 {
     HRESULT hr;
-    CSampleProvider *pProvider = new(std::nothrow) CSampleProvider();
+    CLockServerProvider *pProvider = new(std::nothrow) CLockServerProvider();
     if (pProvider)
     {
         hr = pProvider->QueryInterface(riid, ppv);

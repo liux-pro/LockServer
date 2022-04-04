@@ -1,6 +1,6 @@
 #include "httplib.h"
-#include "CSampleProvider.h"
-#include "CSampleCredential.h"
+#include "CLockServerProvider.h"
+#include "CLockServerCredential.h"
 #include "api.h"
 
 ICredentialProviderEvents* m_pcpe;
